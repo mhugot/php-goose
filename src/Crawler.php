@@ -81,7 +81,7 @@ class Crawler {
      */
     private function getDocument(string $rawHTML): Document {
         $doc = new Document();
-        $doc->html($rawHTML);
+        $doc->setHtml($rawHTML);
 
         return $doc;
     }
