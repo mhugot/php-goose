@@ -226,15 +226,18 @@ class DocumentCleaner extends AbstractModule implements ModuleInterface {
         $nodes = $this->document()->find($selector);
 
         foreach ($nodes as $node) {
-            $tagNodes = $node->find('a, blockquote, dl, div, img, ol, p, pre, table, ul');
-
-            if (!$tagNodes->count()) {
-                $this->replaceElementsWithPara($node);
-            } else {
-                $replacements = $this->getReplacementNodes($node);
-
-                $node->contents()->destroy();
-                $node->appendWith($replacements);
+            // fatal error sometimes, so try catch possible error
+            try {
+                $tagNodes = $node->find('a, blockquote, dl, div, img, ol, p, pre, table, ul');
+                if (!$tagNodes->count()) {
+                    $this->replaceElementsWithPara($node);
+                } else {
+                    $replacements = $this->getReplacementNodes($node);
+                    $node->contents()->destroy();
+                    $node->appendWith($replacements);
+                }
+            } catch (\Throwable $th) {
+                // do nothing
             }
         }
 
